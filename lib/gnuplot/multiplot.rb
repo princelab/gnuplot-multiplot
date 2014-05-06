@@ -15,13 +15,13 @@ module Gnuplot
 end
 
 module Gnuplot
+
   class Multiplot
     NEGATIVE_BOOLEANS = {
       enhanced: :noenhanced,
       rowsfirst: :columnsfirst,
       downwards: :upwards,
     }
-    QUOTED = [:title]
 
     def initialize(gnuplot, opts={}, &block)
       string = 
@@ -33,7 +33,7 @@ module Gnuplot
               pair = 
                 if val.is_a?(Array)
                   [key, val.join(", ")]
-                elsif QUOTED.include?(key)
+                elsif key == :title
                   [key, "\"#{val}\""]
                 else
                   [key, val]
@@ -44,10 +44,9 @@ module Gnuplot
         else
           opts
         end
-      p string
       gnuplot << "set multiplot " << string << "\n"
       block.call(gnuplot)
-      gnuplot << "\nunset multplot"
+      gnuplot << "unset multiplot\n"
     end
   end
 end
